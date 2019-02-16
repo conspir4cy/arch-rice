@@ -1,0 +1,14 @@
+#!/usr/bin/env python3
+
+import os
+import signal
+import subprocess
+import sys
+
+SIGNALS = (signal.SIGINT,)
+
+#print('PID: {}'.format(os.getpid()))
+sig = signal.sigwait(SIGNALS)
+cmd = sys.argv[1:]
+if cmd:
+  subprocess.run(cmd)

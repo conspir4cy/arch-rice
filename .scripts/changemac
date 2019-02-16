@@ -1,0 +1,74 @@
+#!/bin/bash
+# script to cycle network interfaces and better implement macchanger #
+# changemac [option] #
+
+# NID variables #
+e=enp1s0
+w=wlp2s0
+
+# help function #
+mac_help() {
+	echo "ChangeMAC Cycler"
+	echo "Usage: changemac [option]"
+	echo ""
+	echo "	-h,  --help		Print this help message"
+	echo "	-s,  --show		Show current MAC addresses"
+	echo "	-c,  --cycle		Cycle ethernet and wireless MACs"	
+	echo "	-e,  --ethernet		Cycle ethernet MAC only"
+	echo "	-w,  --wireless		Cycle wireless MAC only"
+}
+
+# main functions #
+mac_show() {
+	echo "Ethernet:"
+	macchanger -s $e
+	echo "Wireless:"
+	macchanger -s $w
+}
+
+mac_cycle_all() {
+	sudo ip link set $e down
+	sleep 1
+	sudo ip link set $w down
+	sleep 1
+	echo "Ethernet:"
+	sudo macchanger -rb $e
+	sleep 1
+	echo "Wireless:"
+	sudo macchanger -rb $w
+	sleep 1
+	sudo systemctl restart NetworkManager
+	echo ""
+	echo "Wireless and Ethernet MACs reset!"
+}
+
+mac_cycle_e() {
+	sudo ip link set $e down
+	sleep 1
+	echo "Ethernet:"
+	sudo macchanger -rb $e
+	sleep 1
+	sudo systemctl restart NetworkManager
+	echo ""
+	echo "Ethernet MAC reset!"
+}
+
+mac_cycle_w() {
+	sudo ip link set $w down
+	sleep 1
+	echo "Wireless:"
+	sudo macchanger -rb $w
+	sleep 1
+	sudo systemctl restart NetworkManager
+	echo ""
+	echo "Wireless MAC reset!"
+}
+
+# option if case #
+case "$1" in
+	"-s"|"--show") mac_show ;;
+	"-c"|"--cycle") mac_cycle_all ;;
+	"-e"|"--ethernet") mac_cycle_e ;;
+	"-w"|"--wireless") mac_cycle_w ;;
+	*|"-h"|"--help") mac_help ;;
+esac

@@ -1,0 +1,68 @@
+#!/bin/sh
+
+# Bash amixer-based mixer for ALSA
+#
+# Author: Pável Varela Rodríguez <neonskull@gmail.com>
+#
+# Use it by setting some keybinding or calling it directly from CLI
+#
+# Configure as needed:
+#     MASTER_CONTROL
+#     STEP
+#
+# Interface: All defined function names
+#
+
+# User's Settings
+MASTER_CONTROL="Master"
+STEP=3
+
+
+# Script's Settings
+STATE_FILE="/tmp/volume.state"
+
+
+getMasterVolume ()
+{
+    amixer get $MASTER_CONTROL|tail -n1|sed -r 's/.*\[(.*)%\].*/\1/'
+}
+
+
+# $1: New Volume Level in %
+setMasterVolume () { amixer set $MASTER_CONTROL $1"%">/dev/null; }
+
+
+volumeUp ()
+{
+    VOL=$(getMasterVolume)
+    [[ $VOL -ge 100 ]] && exit 0
+    setMasterVolume $((VOL + $STEP))
+}
+
+
+volumeDown ()
+{
+    VOL=$(getMasterVolume)
+    [[ $VOL -le 0 ]] && exit 0
+    setMasterVolume $((VOL - $STEP))
+}
+
+
+mute () { echo $(getMasterVolume) > $STATE_FILE;setMasterVolume 0; }
+unmute () { setMasterVolume $(cat $STATE_FILE);rm -f $STATE_FILE; }
+
+
+# Main Interface
+up () { volumeUp; }
+down () { volumeDown; }
+togglemute () { [[ -f "${STATE_FILE}" ]] && unmute || mute; }
+get () { getMasterVolume; }
+osd ()
+{
+    BODY="Current Volume Level: "$(getMasterVolume)"%"
+    notify-send -t 3000 -i "info" "Volume" "${BODY}"
+}
+
+
+# This do the interface magic (thanks Bash ;-))
+$@

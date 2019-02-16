@@ -1,0 +1,26 @@
+#!/bin/bash
+
+
+ping_check() {
+	ping -q -w 1 -c 1 192.168.0.1 > /dev/null && echo true || echo false ; 
+}
+
+check=$(ping_check)
+
+while :
+do
+	until [ $check == "true" ] ;
+	do
+		check=$(ping_check) ; 
+		sleep 10 ;
+	done
+
+	until [ $check == "false" ] ;
+	do
+		check=$(ping_check) ; 
+		wget 'https://wttr.in/Farmington?u&format=3' -O /tmp/i3_weather ;
+		cat /tmp/i3_weather ;
+		notify-send -t 2500 -u low "Weather Updated." ;
+        	sleep 180 ;
+	done
+done

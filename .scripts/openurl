@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# Passes argument to urlscan and into dmenu, outputs to firefox #
+
+
+firefox-developer-edition $(urlscan -dn $1 | dmenu -l 10)
