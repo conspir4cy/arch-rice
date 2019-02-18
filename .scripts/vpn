@@ -9,26 +9,27 @@ if [[ $1 =~ ^-?-c(onnect)?$|^-?-d(isconnect)?$|^-?-l(ocations)?$|^-?-s(tatus)?$ 
 fi
 
 # location variables #
-poland="Windscribe-Poland-GCM.ovpn"
-canadae="Windscribe-Canada-East-GCM.ovpn"
-czech="Windscribe-Canada-East-GCM.ovpn"
-hungary="Windscribe-Hungary-GCM.ovpn"
-lithuania="Windscribe-Lithuania-GCM.ovpn"
-russia="Windscribe-Russia-GCM.ovpn"
-useast="Windscribe-US-East-GCM.ovpn"
-uscentral="Windscribe-US-Central-GCM.ovpn"
-windflixus="Windscribe-WINDFLIX-US-GCM.ovpn"
+poland="Windscribe-Poland-GCM.ovpn" ;
+canadae="Windscribe-Canada-East-GCM.ovpn" ;
+czech="Windscribe-Canada-East-GCM.ovpn" ;
+hungary="Windscribe-Hungary-GCM.ovpn" ;
+lithuania="Windscribe-Lithuania-GCM.ovpn" ;
+russia="Windscribe-Russia-GCM.ovpn" ;
+useast="Windscribe-US-East-GCM.ovpn" ;
+uscentral="Windscribe-US-Central-GCM.ovpn" ;
+windflixus="Windscribe-WINDFLIX-US-GCM.ovpn" ;
 
 # help function #
 vpn_help() {
-	echo "OpenVPN Utility"
-	echo "Usage: vpn [option] <location>"
-	echo ""
-	echo "	-h,  --help		Print this help message"
-	echo "	-c,  --connect		Connect to given location"
-	echo "	-d,  --disconnect	Disconnect from OpenVPN"
-	echo "	-l,  --location		Print list of availible locations"
-	echo "	-s,  --status		Print status of logfile"
+	echo "OpenVPN Utility" ;
+	echo "Usage: vpn [option] <location>" ;
+	echo "" ;
+	echo "	-h,  --help		Print this help message" ;
+	echo "	-c,  --connect		Connect to given location" ;
+	echo "	-d,  --disconnect	Disconnect from OpenVPN" ;
+	echo "	-l,  --location		Print list of availible locations" ;
+	echo "	-s,  --status		Print status of logfile" ;
+	echo "" ;
 }
 
 # location case #
@@ -53,33 +54,39 @@ vpn_disconnect() {
 	sudo -u ryan DISPLAY=:0 DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus notify-send -t 2500 "VPN Connection Terminated" ;
 	pkill openvpn ;
 	pkill vpn ;
-}
-
+} 
 vpn_location() {
-	echo ""
-	echo "VPN Locations:"
-	echo ""
-	echo "Poland: poland, pol 		| $poland"
-	echo "Canada East: canadaeast, cae 	| $canadae"
-	echo "Czech Republic: czech, cz 	| $czech"
-	echo "Hungary: hungary, hun 		| $hungary"
-	echo "Lithuania: lithuania, lit 	| $lithuania"
-	echo "Russia: russia, ru 		| $russia"
-	echo "US East: useast, use 		| $useast"
-	echo "US Central: uscentral, usc 	| $uscentral"
-	echo "Windflix US: windflixus, wfus 	| $windflixus"
-	echo ""
+	echo "VPN Locations:" ;
+	echo "" ;
+	echo "Poland: poland, pol 		| $poland" ;
+	echo "Canada East: canadaeast, cae 	| $canadae" ;
+	echo "Czech Republic: czech, cz 	| $czech" ;
+	echo "Hungary: hungary, hun 		| $hungary" ;
+	echo "Lithuania: lithuania, lit 	| $lithuania" ;
+	echo "Russia: russia, ru 		| $russia" ;
+	echo "US East: useast, use 		| $useast" ;
+	echo "US Central: uscentral, usc 	| $uscentral" ;
+	echo "Windflix US: windflixus, wfus 	| $windflixus" ;
+	echo "" ;
 }
 
 vpn_status() {
-	cat /home/ryan/build/openvpn/openvpn.log
+	status=$(ip link show | grep tun0)
+	echo "VPN Status:" ;
+	if [ -n "$status" ] ;
+		then echo "$status" ;
+		else echo "No VPN tunnel exists now." ;
+	fi
+	echo "" ;
+	cat /home/ryan/build/openvpn/openvpn.log ;
+	echo "" ;
 }
 
 # check for openvpn process running and complain if it's not #
 vpn_test() {
-	while [ $(pgrep vpn | head -1) -gt 0 ] ;
+	while [ -n "$(pgrep vpn)" ] ;
 	do
-		if [ $(pgrep openvpn | head -1) -gt 0 ] ;
+		if [ -n "$(pgrep openvpn)" ] ;
 			then sleep 10 ; 
 			else sudo -u ryan DISPLAY=:0 DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus notify-send -u critical "VPN CONNECTION LOST!" ;
 		fi
