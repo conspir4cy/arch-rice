@@ -1,2 +1,2 @@
 # arch-rice
-The usual configs and dotfiles for conveiniance.
+The usual configs and dotfiles for convenience.
