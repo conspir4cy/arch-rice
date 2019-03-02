@@ -74,7 +74,7 @@ vpn_location() {
 
 vpn_status() {
 	status=$(ip link show | grep tun0 | cut -d" " -f2-) ;
-	activeloc=$(ps ax | grep -v grep | grep "vpn -c" | cut -d" " -f16-) ;
+	activeloc=$(ps ax | grep -v grep | grep "vpn -c" | awk 'END{print $NF}') ;
 	
 	case $activeloc in
 		"poland"|"pol") loc=$poland ;;
