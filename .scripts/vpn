@@ -4,7 +4,7 @@
 
 # test if root/su for connect, disconnect, location, and status # 
 if [[ $1 =~ ^-?-c(onnect)?$|^-?-d(isconnect)?$|^-?-l(ocations)?$|^-?-s(tatus)?$ ]] && [ "$EUID" -ne "0" ] ;
-	then echo "Please run as root or superuser!" ;
+	then echo "Please run as root or super-user!" ;
 	exit ;
 fi
 
@@ -45,6 +45,7 @@ case $2 in
 	"windflixus"|"wfus") location=$windflixus ;;
 esac
 
+
 # main functions #
 vpn_connect() {
 	openvpn --daemon --auth-nocache --status /home/ryan/build/openvpn/openvpn.log 10 --config /home/ryan/build/openvpn/$location ;
@@ -55,6 +56,7 @@ vpn_disconnect() {
 	pkill openvpn ;
 	pkill vpn ;
 } 
+
 vpn_location() {
 	echo "VPN Locations:" ;
 	echo "" ;
@@ -71,8 +73,25 @@ vpn_location() {
 }
 
 vpn_status() {
-	status=$(ip link show | grep tun0)
+	status=$(ip link show | grep tun0 | cut -d" " -f2-) ;
+	activeloc=$(ps ax | grep -v grep | grep "vpn -c" | cut -d" " -f16-) ;
+	
+	case $activeloc in
+		"poland"|"pol") loc=$poland ;;
+        	"canadaeast"|"cae") loc=$canadae ;;
+        	"czech"|"cz") loc=$czech ;;
+        	"hungary"|"hun") loc=$hungary ;;
+        	"lithuania"|"lit") loc=$lithuania ;;
+        	"russia"|"ru") loc=$russia ;;
+        	"useast"|"use") loc=$useast ;;
+        	"uscentral"|"usc") loc=$uscentral ;;
+        	"windflixus"|"wfus") loc=$windflixus ;;
+	esac
+
 	echo "VPN Status:" ;
+	echo "" ;
+	echo "Connected to: $loc" ;
+	echo "" ;
 	if [ -n "$status" ] ;
 		then echo "$status" ;
 		else echo "No VPN tunnel exists now." ;
