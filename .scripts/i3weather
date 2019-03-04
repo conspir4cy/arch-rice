@@ -11,7 +11,7 @@ get_weather() {
 	
 	if [ $check == "true" ] ;
 	then
-		wget 'https://wttr.in/Farmington?u&format=3' -O /tmp/i3_weather ;
+		wget -q -t 3 -T 15 'https://wttr.in/Farmington?u&format=3' -O /tmp/i3_weather -o /tmp/i3_weather_log ;
 		cat /tmp/i3_weather ;
 		notify-send -t 2500 -u low "Weather Updated." ;
        		sleep 180 ;
