@@ -89,7 +89,6 @@ vpn_status() {
 	esac
 
 	echo "VPN Status:" ;
-	echo "" ;
 	echo "Connected to: $loc" ;
 	echo "" ;
 	if [ -n "$status" ] ;
