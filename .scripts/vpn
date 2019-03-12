@@ -26,9 +26,9 @@ vpn_help() {
 	echo "" ;
 	echo "	-h,  --help		Print this help message" ;
 	echo "	-c,  --connect		Connect to given location" ;
-	echo "	-d,  --disconnect	Disconnect from OpenVPN" ;
+	echo "	-d,  --disconnect	Disconnect from OpenVPN and vpn script" ;
 	echo "	-l,  --location		Print list of availible locations" ;
-	echo "	-s,  --status		Print status of logfile" ;
+	echo "	-s,  --status		Print status of OpenVPN logfile and current connection" ;
 	echo "" ;
 }
 
